@@ -1,14 +1,15 @@
-import sys
-sys.path.append(r"C:\Users\yasuo\OneDrive\Escritorio\Python\PYTHON")
 
-from PROG_1_PP.Funciones import *
+from Funciones import *
 
-
-# 1) Una matriz de numeros enteros de 30 filas(los alumnos) x 5 columnas (materias) y la interseccion es una calificacion entera entre 1 y 10.
-num_estudiante = 2
-num_materia = 3
-
-def inicializar_matriz(cantidad_filas: int, cantidad_columnas: int, valor_inicial: any = 0)->list:
+def inicializar_matriz(cantidad_filas: int, cantidad_columnas: int, valor_inicial: any = 0) -> list:
+    """Crea una matriz con las dimensiones especificadas e inicializada con un valor.
+    Args:
+        cantidad_filas: Cantidad de filas de la matriz.
+        cantidad_columnas: Cantidad de columnas de la matriz.
+        valor_inicial: Valor con el que se rellena la matriz (default 0).
+    Returns:
+        Matriz (lista de listas) inicializada.
+    """
     matriz = []
     for i in range (cantidad_filas):
         fila = [valor_inicial] * cantidad_columnas
@@ -16,7 +17,13 @@ def inicializar_matriz(cantidad_filas: int, cantidad_columnas: int, valor_inicia
 
     return matriz
 
-def paralela_estado(mi_matriz: list)->list:
+def paralela_estado(mi_matriz: list) -> list:
+    """Crea una lista paralela de estados inicializada en 0.
+    Args:
+        mi_matriz: La matriz principal de referencia para el tamaño.
+    Returns:
+        Lista de enteros (ceros) con el mismo largo que la matriz.
+    """
     lista_paralela = []
 
     for i in range(len(mi_matriz)):
@@ -24,12 +31,16 @@ def paralela_estado(mi_matriz: list)->list:
 
     return lista_paralela
 
-# 5)Una lista de estados 0(libre) y 1 (cupado)
 
-matriz = inicializar_matriz(num_estudiante,num_materia)
-estados = paralela_estado(matriz)
 
-def cargar_matriz_secuencial(mi_matriz: list,estados)->list:
+def cargar_matriz_secuencial(mi_matriz: list, estados: list) -> list:
+    """Carga notas en la matriz de forma secuencial, saltando estudiantes ocupados.
+    Args:
+        mi_matriz: Matriz de notas a rellenar.
+        estados: Lista de estados (1 = ocupado, 0 = libre).
+    Returns:
+        La matriz de notas actualizada.
+    """
     
     for i in range(len (mi_matriz)):
         if estados[i] == 1:
@@ -43,16 +54,15 @@ def cargar_matriz_secuencial(mi_matriz: list,estados)->list:
     
     return mi_matriz
 
-carga_matriz = cargar_matriz_secuencial(matriz, estados)
-
-# for i in range(len(estados)):
-#     print(estados[i])
-
-
-# print(carga_matriz)
 
 # 2) Una lista de apellido y nombre de los estudiantes
-def paralela_nombre_apellido(mi_matriz: list)->list:
+def paralela_nombre_apellido(mi_matriz: list) -> list:
+    """Solicita y valida el nombre y apellido para cada fila de la matriz.
+    Args:
+        mi_matriz: Matriz de referencia para la cantidad de estudiantes.
+    Returns:
+        Lista con los nombres validados.
+    """
     lista_paralela = []
 
     for i in range(len(mi_matriz)):
@@ -63,19 +73,15 @@ def paralela_nombre_apellido(mi_matriz: list)->list:
     return lista_paralela
 
 
-lista_nom = paralela_nombre_apellido(carga_matriz)
-# for l in range (len(lista_nom)):
-#     print(lista_nom[l])
-
-
-# for i in range (len(carga_matriz)):
-#     for j in range (len(carga_matriz[i])):
-#         print(carga_matriz[i][j], end = "") 
-#     print()
-
 # 3)Una lista de genero entre F,M,X
 
-def paralela_genero(nombres: list)->list:
+def paralela_genero(nombres: list) -> list:
+    """Solicita y valida el género (F, M, X) para cada estudiante.
+    Args:
+        nombres: Lista de nombres de los estudiantes.
+    Returns:
+        Lista de caracteres representando los géneros.
+    """
     lista_paralela = []
     
     for i in range(len(nombres)):
@@ -85,13 +91,16 @@ def paralela_genero(nombres: list)->list:
 
     return lista_paralela
 
-genero = paralela_genero(lista_nom)
-#for l in range (len(genero)):
-    # print(genero[l])
 
 # 4)Una lista de legajos de los estudiantes de 6 cifras
 
-def paralela_legajo(nombres: list)->list:
+def paralela_legajo(nombres: list) -> list:
+    """Solicita y valida un número de legajo de 6 cifras para cada estudiante.
+    Args:
+        nombres: Lista de nombres de los estudiantes.
+    Returns:
+        Lista de enteros con los legajos.
+    """
     lista_paralela = []
     
     for i in range(len(nombres)):
@@ -101,9 +110,19 @@ def paralela_legajo(nombres: list)->list:
 
     return lista_paralela
 
-legajo = paralela_legajo(lista_nom)
 
-def recorrido(matriz: list, nombre: list, genero: list, legajo: list, estados : list):
+
+def recorrido(matriz: list, nombre: list, genero: list, legajo: list, estados: list) -> list:
+    """Combina las listas paralelas y la matriz en una única estructura de datos.
+    Args:
+        matriz: Matriz de notas.
+        nombre: Lista de nombres.
+        genero: Lista de géneros.
+        legajo: Lista de legajos.
+        estados: Lista de estados (solo procesa si estado es 1).
+    Returns:
+        Lista de listas donde cada sublista es [Nombre, Genero, Legajo, Nota1, Nota2...].
+    """
     lista_estudiante = []
     
     for i in range(len (matriz)):
@@ -113,13 +132,30 @@ def recorrido(matriz: list, nombre: list, genero: list, legajo: list, estados : 
                 fila += [matriz[i][j]]
 
             lista_estudiante += [fila]
-        else:
-            estados
+        
     return lista_estudiante    
 
-estudiantes = recorrido(carga_matriz, lista_nom, genero, legajo, estados)
+def ver_todos_estudiantes(lista_estudiantes: list) -> None:
+    """Muestra los datos de todos los estudiantes.
+    Args:
+        lista_estudiantes: Lista combinada generada por la función 'recorrido'.
+    Returns:
+        None
+    """
 
-def ver_estudiante(lista_estudiantes: list):
+    for i in lista_estudiantes:
+            print(f"Datos del estudiante {i[0]}, Genero {i[1]}, numero de legajo {i[2]}, Sus Notas son: ")
+            for j in range(3, len(i)):
+                print(f" {i[j]}")
+
+
+def ver_estudiante(lista_estudiantes: list) -> None:
+    """Busca un estudiante por nombre e imprime sus datos y notas.
+    Args:
+        lista_estudiantes: Lista combinada generada por la función 'recorrido'.
+    Returns:
+        None
+    """
     while True:
         buscar = input("Ingrese el nombre del estudiante que desea ver: ")
         buscar = nombre_apellido(buscar)
@@ -140,67 +176,119 @@ def ver_estudiante(lista_estudiantes: list):
         else:
             print(" Estudiante no encontrado. Intente nuevamente.\n")
 
-ver = ver_estudiante(estudiantes)
 
-def promedio(matriz: list):
-    promedios = []  
 
-    for i in matriz:
+def promedio(matriz: list) -> list:
+    """Calcula el promedio de notas por cada fila (estudiante).
+    Args:
+        matriz: Matriz de notas de los estudiantes.
+    Returns:
+        Lista de flotantes con los promedios calculados.
+    """
+    for fila in matriz:
         suma = 0
-        for nota in i:
+        cantidad = len(fila)
+        for nota in fila:
             suma += nota
-        prom = suma / len(i)
-        promedios += [prom]   
+            
+        if cantidad > 0:
+            promedio = suma / cantidad
+        else:
+            promedio = 0.0
+            
+        lista_promedios += [promedio]
+        
+    return lista_promedios
 
-    return promedios
+def ordenar_por_promedio(lista_estudiantes: list, lista_promedios: list, orden: bool = True) -> None:
+    """Ordena AMBAS listas basándose en los valores de la lista de promedios.
+    Args:
+        lista_estudiantes: La lista con los datos (Nombres, Legajos, etc).
+        lista_promedios: La lista con los números decimales de los promedios.
+        orden: True para ASC (Menor a Mayor), False para DESC (Mayor a Menor).
+    Returns:
+        None (Modifica las listas originales directamente).
+    """
+    prom_temp = []
 
-def ordenar_burbuja_list(lista: list, orden: bool = True) -> list:
-    """
-    La función ordena una lista.
-    Args: Variable lista.
-    Return: lista. ordenada.
-    """
-    n = len(lista) 
+    for x in lista_promedios:
+        prom_temp = prom_temp + [x]
+    
+    est_temp = []
+
+    for fila in lista_estudiantes:
+        nueva_fila = []
+        for x in fila:
+            nueva_fila = nueva_fila + [x]   # agrego elemento
+        est_temp = est_temp + [nueva_fila]
+    
+
+    n = len(prom_temp)
+    
     for i in range(n):
-        for j in range(0,n - i -1):
-            if orden == True:
-                if lista[j] > lista[j + 1]: 
-                    aux = lista[j] 
-                    lista[j] = lista[j+1]
-                    lista[j+1] = aux
-            else:
-                 if lista[j] < lista[j + 1]: 
-                    aux = lista[j] 
-                    lista[j] = lista[j+1]
-                    lista[j+1] = aux
-    return lista
-    
+        for j in range(0, n - i - 1):
+            
+            p_actual = prom_temp[j]
+            p_siguiente = prom_temp[j+1]
+            
+            intercambiar = False
+            
+            if orden == True: # Ascendente
+                if p_actual > p_siguiente:
+                    intercambiar = True
+                texto_orden = "Menor a Mayor"
+            else: # Descendente (Mayor a Menor - Default)
+                if p_actual < p_siguiente:
+                    intercambiar = True
+                texto_orden = "Mayor a Menor"
+            
+            if intercambiar:
+                # Intercambiamos en las listas 
+                aux_p = prom_temp[j]
+                prom_temp[j] = prom_temp[j+1]
+                prom_temp[j+1] = aux_p
+                
+                aux_e = est_temp[j]
+                est_temp[j] = est_temp[j+1]
+                est_temp[j+1] = aux_e
 
-def ordenar_burbuja(matriz: list,orden: bool = True) -> list:
-    """
-    La función ordena una matriz.
-    Args: Variable Matriz
-    Return: Matriz ordenada.
-    """
-    for i in range(len(matriz)):
-         matriz[i] = ordenar_burbuja_list(matriz[i], orden)
-    
+    print(f"\n--- Ranking de Estudiantes ({texto_orden}) ---")
+    for k in range(len(est_temp)):
+        nombre = est_temp[k][0] 
+        prom = prom_temp[k]
+        print(f"{k+1}°: {nombre} - Promedio: {prom}")
 
-    return matriz
-    
-    
-def imprimir_lista(lista):
-     for i in range(len(lista)):
+
+def imprimir_lista(lista: list) -> None:
+    """Imprime los elementos de una lista en una sola línea separados por espacios.
+    Args:
+        lista: Lista de elementos a imprimir.
+    Returns:
+        None
+    """
+    for i in range(len(lista)):
  	    print(lista[i] , end = " ")
          
 
-def imprimir_matriz(matriz:list)->list:
+def imprimir_matriz(matriz: list) -> None:
+    """Imprime una matriz fila por fila.
+    Args:
+        matriz: La matriz a imprimir.
+    Returns:
+        None
+    """
     for i in range (len(matriz)):
         for j in range (len(matriz[i])):
             print(matriz[i][j], end = "")
         print()    
 
 def promedio_materias(matriz: list) -> list:
+    """Calcula el promedio por columnas (materias) en lugar de filas.
+    Args:
+        matriz: Matriz de notas.
+    Returns:
+        Lista de promedios por materia.
+    """
     filas = len(matriz)
     columnas = len(matriz[0])
     promedios = []
@@ -209,24 +297,36 @@ def promedio_materias(matriz: list) -> list:
         suma = 0
         for i in range(filas):
             suma += matriz[i][j]
-        prom = suma / filas
+
+        if filas > 0:
+            prom = suma / filas
+        else:
+            prom = 0.0
         promedios += [prom]
 
     return promedios
 
-def mostrar_mayor_promedio_materia(matriz: list):
+def mostrar_mayor_promedio_materia(matriz: list) -> None:
+    """Identifica y muestra la materia con el mayor promedio general.
+    Args:
+        matriz: Matriz de notas.
+    Returns:
+        None
+    """
 
     promedios = promedio_materias(matriz)
-    columnas = len(matriz[0])
     
     max_prom = promedios[0]
+
     for prom in promedios:
             if prom > max_prom:
                 max_prom = prom
-
-    for j in range(columnas):
+    
+    for j in range(len(promedios)):
         if promedios[j] == max_prom:
             print("La MATERIA_" + str(j + 1)," Promedio:",promedios[j])
+
+
 
 def promedio(matriz: list):
     promedios = []  
@@ -240,37 +340,64 @@ def promedio(matriz: list):
 
     return promedios
 
-def ver_estudiante_legajo(lista_estudiantes: list):
-    while True:
-        buscar = input("Ingrese el numero de legajo del estudiante que desea ver: ")
-        buscar = validacion_legajo(buscar)
-
-        encontrado = False
+def buscar_indice_por_legajo(lista_estudiantes: list, legajo_buscado: int) -> int:
+    """Recorre la lista de estudiantes buscando un legajo específico.
+    Args:
+        lista_estudiantes: La lista combinada (generada por la función recorrido).
+        legajo_buscado: El número entero del legajo a buscar.
+    Returns:
+        El índice (int) donde se encuentra el estudiante, o -1 si no existe.
+    """
+    # Recorremos toda la lista de estudiantes
+    for i in range(len(lista_estudiantes)):
+        # la función 'recorrido', el legajo está en la posición 2
+        legajo_actual = lista_estudiantes[i][2]
         
-        for i in lista_estudiantes:
-            if buscar == i[2]:
-                print(f"Datos del estudiante {i[0]}, Genero {i[1]}, numero de legajo {i[2]}, Sus Notas promedia:")
-                
-                notas = []
-                for j in range(3, len(i)):
-                    notas += [i[j]]
+        if legajo_actual == legajo_buscado:
+            return i #  Devolvemos su posición
+            
+    return -1 # Retornamos -1 si recorrimos todo y no estaba
 
-                prom = promedio([notas])
-                print("Promedio:", prom[0])
+def ver_estudiante_legajo(lista_estudiantes: list, lista_promedio: list) -> None:
+    """Busca un estudiante por legajo y su promedio.
+    Args:
+        lista_estudiantes: Lista combinada de estudiantes.
+        lista_promedio: Lista de promedios paralela.
+    Returns:
+        None
+    """
+    while True:
+        buscar = validacion_legajo(input("Ingrese el numero de legajo del estudiante que desea ver: "))
+        buscar = (buscar_indice_por_legajo(lista_estudiantes,buscar))
 
-                for j in range(3, len(i)):
-                    print(f" {i[j]}")
-                encontrado = True
-                break
+        if buscar != -1:
+            datos = lista_estudiantes[buscar]
+            prome = lista_promedio[buscar]
 
-        if encontrado == True:
+            print(f"Datos del estudiante: {datos[0]}")
+            print(f"Genero: {datos[1]}")
+            print(f"Legajo: {datos[2]}")
+            print("Sus Notas son:")
+            
+            # Recorremos las notas (desde el índice 3)
+            for j in range(3, len(datos)):
+                 print(f" - {datos[j]}")
+                    
+            print(f"Promedio general: {prome}")
+
             break
         else:
             print(" Estudiante no encontrado. Intente nuevamente.\n")
 
-def repeticiones_por_materia(matriz: list):
-    materia = input("Ingrese numero de materia (1-5): ")
-    materia = materia_validacion(materia)
+
+def repeticiones_por_materia(matriz: list, materia: int) -> list:
+    """Cuenta cuántas veces aparece cada nota (1-10) en una materia específica.
+    Args:
+        matriz: Matriz de notas.
+        numero_materia: El número de la materia a analizar (int).
+    Returns:
+        Lista de conteo de 10 elementos, donde el índice+1 es la nota.
+    """
     
     col = materia - 1
     
