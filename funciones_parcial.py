@@ -1,116 +1,53 @@
 
 from Funciones import *
+def dato_harco(l_nombre,l_genero,l_lega,l_esta,matriz):
+    nom = ["mariano","mateo","paloma","antonio"]
+    l_nombre += nom
+    gen = ["m","m","f","x"]
+    l_genero += gen
+    leg = [102030,203010,103020,403020]
+    l_lega += leg
+    mat =[
+        [3,7,8],
+        [6,9,4],
+        [8,8,5],
+        [5,7,7]
+    ]
+    matriz += mat
+    est = [1,1,1,1]
+    l_esta += est
 
-def inicializar_matriz(cantidad_filas: int, cantidad_columnas: int, valor_inicial: any = 0) -> list:
-    """Crea una matriz con las dimensiones especificadas e inicializada con un valor.
-    Args:
-        cantidad_filas: Cantidad de filas de la matriz.
-        cantidad_columnas: Cantidad de columnas de la matriz.
-        valor_inicial: Valor con el que se rellena la matriz (default 0).
-    Returns:
-        Matriz (lista de listas) inicializada.
-    """
-    matriz = []
-    for i in range (cantidad_filas):
-        fila = [valor_inicial] * cantidad_columnas
-        matriz += [fila]
-
-    return matriz
-
-def paralela_estado(mi_matriz: list) -> list:
-    """Crea una lista paralela de estados inicializada en 0.
-    Args:
-        mi_matriz: La matriz principal de referencia para el tamaño.
-    Returns:
-        Lista de enteros (ceros) con el mismo largo que la matriz.
-    """
-    lista_paralela = []
-
-    for i in range(len(mi_matriz)):
-        lista_paralela += [0]
-
-    return lista_paralela
-
-
-
-def cargar_matriz_secuencial(mi_matriz: list, estados: list) -> list:
-    """Carga notas en la matriz de forma secuencial, saltando estudiantes ocupados.
-    Args:
-        mi_matriz: Matriz de notas a rellenar.
-        estados: Lista de estados (1 = ocupado, 0 = libre).
-    Returns:
-        La matriz de notas actualizada.
-    """
+def cargar_datos_por_uno(cant_est: int, cant_mat: int, l_nombres: list, l_generos: list, l_legajos: list,matriz: list, l_estados: list) -> None:
     
-    for i in range(len (mi_matriz)):
-        if estados[i] == 1:
-            print(f"El estudiante N°{i+1} esta ocupado, Saltado al proximo")
-            continue
-        for j in range (len(mi_matriz[i])):
-            validacion = input(f"Ingrese nota para el estudiante N°{i+1} de la materia °{j+1}: ")
-            validacion = calificaciones(validacion)
-            mi_matriz[i][j] = validacion
-        estados[i] = 1   
-    
-    return mi_matriz
+    for i in range(cant_est):
+        print(f"\n--- Carga datos Estudiante N° {i+1} ---")
 
+        # 1. Nombre
+        nom = input("Ingrese Nombre y Apellido: ")
+        nom = nombre_apellido(nom)
+        l_nombres += [nom] 
 
-# 2) Una lista de apellido y nombre de los estudiantes
-def paralela_nombre_apellido(mi_matriz: list) -> list:
-    """Solicita y valida el nombre y apellido para cada fila de la matriz.
-    Args:
-        mi_matriz: Matriz de referencia para la cantidad de estudiantes.
-    Returns:
-        Lista con los nombres validados.
-    """
-    lista_paralela = []
+        # 2. Género
+        gen = input(f"Ingrese Genero de {nom} ('F', 'M', 'X'): ")
+        gen = validacion_genero(gen)
+        l_generos += [gen]
 
-    for i in range(len(mi_matriz)):
-        validacion = input(f"Ingrese Nombre y Apellido del estudiante n°{i+1}: ")
-        validacion = nombre_apellido(validacion)
-        lista_paralela += [validacion]
+        # 3. Legajo
+        leg = input(f"Ingrese Legajo: ")
+        leg = validacion_legajo(leg)
+        l_legajos += [leg]
 
-    return lista_paralela
+        # 4. Notas (Armamos la fila y la metemos a la matriz)
+        fila_notas = []
+        for j in range(cant_mat):
+            nota = input(f"  - Nota materia {j+1}: ")
+            nota = calificaciones(nota)
+            fila_notas += [nota]
+        
+        matriz += [fila_notas] 
 
-
-# 3)Una lista de genero entre F,M,X
-
-def paralela_genero(nombres: list) -> list:
-    """Solicita y valida el género (F, M, X) para cada estudiante.
-    Args:
-        nombres: Lista de nombres de los estudiantes.
-    Returns:
-        Lista de caracteres representando los géneros.
-    """
-    lista_paralela = []
-    
-    for i in range(len(nombres)):
-        validacion = input(f"Ingrese Genero de {nombres[i]} 'F', 'M', 'X':  ")
-        validacion = validacion_genero(validacion)
-        lista_paralela += [validacion]
-
-    return lista_paralela
-
-
-# 4)Una lista de legajos de los estudiantes de 6 cifras
-
-def paralela_legajo(nombres: list) -> list:
-    """Solicita y valida un número de legajo de 6 cifras para cada estudiante.
-    Args:
-        nombres: Lista de nombres de los estudiantes.
-    Returns:
-        Lista de enteros con los legajos.
-    """
-    lista_paralela = []
-    
-    for i in range(len(nombres)):
-        validacion = input(f"Ingrese numero de lejado de {nombres[i]} de 6 cifras:  ")
-        validacion = validacion_legajo(validacion)
-        lista_paralela += [validacion]
-
-    return lista_paralela
-
-
+        # 5. Estado
+        l_estados += [1]
 
 def recorrido(matriz: list, nombre: list, genero: list, legajo: list, estados: list) -> list:
     """Combina las listas paralelas y la matriz en una única estructura de datos.
@@ -143,40 +80,91 @@ def ver_todos_estudiantes(lista_estudiantes: list) -> None:
         None
     """
 
-    for i in lista_estudiantes:
-            print(f"Datos del estudiante {i[0]}, Genero {i[1]}, numero de legajo {i[2]}, Sus Notas son: ")
-            for j in range(3, len(i)):
-                print(f" {i[j]}")
+    txt = "Nombre y Apellido"
+    espacios = 25 - len(txt) 
+    m = int (espacios/2 )
+    celda_nom = (""*m) + txt + (" " * espacios)
 
+    txt2 = "Gen"
+    espacios_totales = 5 - len(txt2)
+    mitad1 = int(espacios_totales / 2)
+    resto1 = espacios_totales - mitad1
+   
+    celda_gen = (" " * mitad1) + txt2 + (" " * resto1)
 
-def ver_estudiante(lista_estudiantes: list) -> None:
-    """Busca un estudiante por nombre e imprime sus datos y notas.
-    Args:
-        lista_estudiantes: Lista combinada generada por la función 'recorrido'.
-    Returns:
-        None
-    """
-    while True:
-        buscar = input("Ingrese el nombre del estudiante que desea ver: ")
-        buscar = nombre_apellido(buscar)
+    txt3 = "Legajo"
+    espacios_totales = 10 - len(txt3)
+    mitad2 = int(espacios_totales / 2)
+    resto2 = espacios_totales - mitad2
+    celda_leg = (" " * mitad2) + txt3 + (" " * resto2)
 
-        encontrado = False
+    linea_entera = "| " + celda_nom + " | " + celda_gen + " | " + celda_leg + " |"
+
+    cant_materias = len(lista_estudiantes[0]) - 3
+    
+    for k in range(cant_materias):
+        txt4 = "Mat. " + str(k+1)
+
+        espacios_totales = 7 - len(txt4)
+        mitad3 = int(espacios_totales / 2)
+        resto3 = espacios_totales - mitad3
         
-        for i in lista_estudiantes:
-            if buscar == i[0]:
-                print(f"Datos del estudiante {i[0]}, Genero {i[1]}, numero de legajo {i[2]}, Sus Notas son: ")
-                
-                for j in range(3, len(i)):
-                    print(f" {i[j]}")
-                encontrado = True
-                break
+        celda_mat = (" " * mitad3) + txt4 + (" " * resto3)
+        linea_entera += " " + celda_mat + " |"
 
-        if encontrado == True:
-            break
-        else:
-            print(" Estudiante no encontrado. Intente nuevamente.\n")
+    largo_total = len(linea_entera)
+    print("-" * largo_total)
+    print(linea_entera)
+    print("-" * largo_total)
 
+    for est in lista_estudiantes:
 
+        nombre = str(est[0])
+        genero = str(est[1])
+        legajo = str(est[2])
+
+        espacios = 25 - len(nombre)
+        celda_nom = nombre + (" " * espacios)
+
+        espacios_totales = 5 - len(genero)
+        mitad1 = int(espacios_totales / 2)
+        resto1 = espacios_totales - mitad1
+        celda_gen = (" " * mitad1) + genero + (" " * resto1)
+
+        espacios_totales = 10 - len(legajo)
+        mitad2 = int(espacios_totales / 2)
+        resto2 = espacios_totales - mitad2
+        celda_leg = (" " * mitad2) + legajo + (" " * resto2)
+
+        fila = "| " + celda_nom + " | " + celda_gen + " | " + celda_leg + " |"
+
+        for j in range(3, len(est)):
+            nota = str(est[j])
+            
+            espacios_totales = 7 - len(nota)
+            mitad3 = int(espacios_totales / 2)
+            resto3 = espacios_totales - mitad3
+            
+            celda_nota = (" " * mitad3) + nota + (" " * resto3)
+            fila += " " + celda_nota + " |"
+
+        print(fila)
+
+    print("-" * largo_total)
+
+def dibujo_prome():
+    txt = "¡ Promedios cargados exitosamente !"
+    espacios_totales = 50 - len(txt) 
+    
+    m_izquierda = int(espacios_totales / 2)
+    m_derecha = espacios_totales - m_izquierda
+    celda_nom = ("|"+" " * m_izquierda) + txt + (" " * m_derecha+"|")
+    
+    largo_total = len(celda_nom) 
+    
+    print("-" * largo_total)
+    print(celda_nom)
+    print("-" * largo_total)
 
 def promedio(matriz: list) -> list:
     """Calcula el promedio de notas por cada fila (estudiante).
@@ -185,6 +173,7 @@ def promedio(matriz: list) -> list:
     Returns:
         Lista de flotantes con los promedios calculados.
     """
+    lista_promedios = []
     for fila in matriz:
         suma = 0
         cantidad = len(fila)
@@ -193,12 +182,15 @@ def promedio(matriz: list) -> list:
             
         if cantidad > 0:
             promedio = suma / cantidad
+            promedio = (promedio * 100 // 1) / 100
         else:
             promedio = 0.0
             
         lista_promedios += [promedio]
         
     return lista_promedios
+
+
 
 def ordenar_por_promedio(lista_estudiantes: list, lista_promedios: list, orden: bool = True) -> None:
     """Ordena AMBAS listas basándose en los valores de la lista de promedios.
@@ -210,6 +202,11 @@ def ordenar_por_promedio(lista_estudiantes: list, lista_promedios: list, orden: 
         None (Modifica las listas originales directamente).
     """
     prom_temp = []
+    if orden:
+        texto_orden = "Menor a Mayor"
+    else:
+        texto_orden = "Mayor a Menor"
+
 
     for x in lista_promedios:
         prom_temp = prom_temp + [x]
@@ -236,11 +233,11 @@ def ordenar_por_promedio(lista_estudiantes: list, lista_promedios: list, orden: 
             if orden == True: # Ascendente
                 if p_actual > p_siguiente:
                     intercambiar = True
-                texto_orden = "Menor a Mayor"
+                
             else: # Descendente (Mayor a Menor - Default)
                 if p_actual < p_siguiente:
                     intercambiar = True
-                texto_orden = "Mayor a Menor"
+                
             
             if intercambiar:
                 # Intercambiamos en las listas 
@@ -258,29 +255,6 @@ def ordenar_por_promedio(lista_estudiantes: list, lista_promedios: list, orden: 
         prom = prom_temp[k]
         print(f"{k+1}°: {nombre} - Promedio: {prom}")
 
-
-def imprimir_lista(lista: list) -> None:
-    """Imprime los elementos de una lista en una sola línea separados por espacios.
-    Args:
-        lista: Lista de elementos a imprimir.
-    Returns:
-        None
-    """
-    for i in range(len(lista)):
- 	    print(lista[i] , end = " ")
-         
-
-def imprimir_matriz(matriz: list) -> None:
-    """Imprime una matriz fila por fila.
-    Args:
-        matriz: La matriz a imprimir.
-    Returns:
-        None
-    """
-    for i in range (len(matriz)):
-        for j in range (len(matriz[i])):
-            print(matriz[i][j], end = "")
-        print()    
 
 def promedio_materias(matriz: list) -> list:
     """Calcula el promedio por columnas (materias) en lugar de filas.
@@ -327,19 +301,6 @@ def mostrar_mayor_promedio_materia(matriz: list) -> None:
             print("La MATERIA_" + str(j + 1)," Promedio:",promedios[j])
 
 
-
-def promedio(matriz: list):
-    promedios = []  
-
-    for i in matriz:
-        suma = 0
-        for nota in i:
-            suma += nota
-        prom = suma / len(i)
-        promedios += [prom]   
-
-    return promedios
-
 def buscar_indice_por_legajo(lista_estudiantes: list, legajo_buscado: int) -> int:
     """Recorre la lista de estudiantes buscando un legajo específico.
     Args:
@@ -368,22 +329,13 @@ def ver_estudiante_legajo(lista_estudiantes: list, lista_promedio: list) -> None
     """
     while True:
         buscar = validacion_legajo(input("Ingrese el numero de legajo del estudiante que desea ver: "))
-        buscar = (buscar_indice_por_legajo(lista_estudiantes,buscar))
+        buscar = buscar_indice_por_legajo(lista_estudiantes,buscar)
 
         if buscar != -1:
             datos = lista_estudiantes[buscar]
             prome = lista_promedio[buscar]
 
-            print(f"Datos del estudiante: {datos[0]}")
-            print(f"Genero: {datos[1]}")
-            print(f"Legajo: {datos[2]}")
-            print("Sus Notas son:")
-            
-            # Recorremos las notas (desde el índice 3)
-            for j in range(3, len(datos)):
-                 print(f" - {datos[j]}")
-                    
-            print(f"Promedio general: {prome}")
+            dibuja_legajo(datos,prome)
 
             break
         else:
@@ -394,19 +346,23 @@ def repeticiones_por_materia(matriz: list, materia: int) -> list:
     """Cuenta cuántas veces aparece cada nota (1-10) en una materia específica.
     Args:
         matriz: Matriz de notas.
-        numero_materia: El número de la materia a analizar (int).
+        materia: El número de la materia a analizar (int).
     Returns:
         Lista de conteo de 10 elementos, donde el índice+1 es la nota.
     """
+    materia = materia_validacion(materia)
+    columna = materia - 1
     
-    col = materia - 1
+    # Inicializamos lista fija de 10 ceros
+    contadores = [0] * 10 
     
-    conteo = [0] * 10
-
-    for fila in matriz:
-        nota = fila[col] 
-        if 1 <= nota <= 10:
-            conteo[nota - 1] += 1  
-
-    return conteo
-
+    for i in range(len(matriz)):
+        # Tomamos la nota de la fila i, columna seleccionada
+        nota = matriz[i][columna]
+        
+        # Validamos que sea nota valida (por si hay 0s de inicializacion)
+        idx = nota - 1
+        contadores[idx] = contadores[idx] + 1
+            
+    for k in range(10):
+        print("Nota", k+1, ":", " se repite " ,contadores[k], "veces")
